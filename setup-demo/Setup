@@ -1,0 +1,14 @@
+#!/usr/bin/setup -f
+prepare-match '(.*)\.includes' \
+  = Includes '$1'
+prepare-match '(.*)\.all-includes' \
+  = Concat '$1.includes' @'$1.includes{\"\$word.all-includes\"}'
+prepare-match '(.*)\.o' \
+  = CC '$1.c' @'$1.c.all-includes'
+
+function incObj() { echo "${1/%.*/.o}"; }
+prepare main = LD main.o @'main.c.all-includes{incObj}'
+
+function CC() { gcc -c -o "$1" "$2"; }
+function LD() { gcc -o "$1" "${@:2}"; }
+function Includes() { sed -rn 's/^#include\s*"(.*)"\s*$/\1/p' "$2" > "$1"; }
