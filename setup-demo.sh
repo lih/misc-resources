@@ -13,6 +13,7 @@ fi
 
 delays=( 0.05 0.05 0.05 0.05 0.1 0.2 )
 function +() {
+    sleep "${SLEEP:-1}"
     local i=0 cmd="$*"
     for((i=0;i<${#cmd};i++)); do
 	printf "%s" "${cmd:i:1}"
@@ -21,32 +22,31 @@ function +() {
     printf "\n"
     eval "$cmd"
     printf "> "
-    sleep "${SLEEP:-1}"
 }
 
 printf "> "
 
 + ls
-SLEEP=2 + cat main.c
-SLEEP=5 + cat Setup
++ cat main.c
+SLEEP=2 + cat Setup
+SLEEP=7 + setup
++ ./main
++ edit main.c
 + setup
-+ ./main
-+ edit main.c
-SLEEP=2 + setup
-+ edit main.c
-SLEEP=2 + setup
-+ ./main
-+ 'setup --watch & pid=$!'
-SLEEP=2 +
+SLEEP=2 + edit main.c
++ setup
+SLEEP=2 + ./main
++ 'setup --watch 2>&1 | sed s/^/[watch]:\ / & pid=$!'
+SLEEP=0.5 +
 + touch main.c
-SLEEP=2 +
+SLEEP=0.5 +
 + touch hello.h
-SLEEP=2 +
-+ ./main
++
+SLEEP=2 + ./main
 + sed \''s/"world"/"you"/'\' -i main.c
 +
 + ./main
-+ kill '$pid'
+SLEEP=2 + kill '$pid'
 
 printf "\r"
 
